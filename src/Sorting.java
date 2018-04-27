@@ -12,69 +12,65 @@ public class Sorting {
      * @param arr
      */
     public static void mergeSort(CompareInt[] arr) {
-	CompareInt[] aux = new CompareInt[arr.length];
-	myMergeSort(arr, aux, 0, arr.length - 1);
-
+	int length = arr.length;
+	mergeSort(arr, 0, length - 1);
     }
 
     /**
      * My implementation of the mergesort Algorithm
      * 
      * @param arr
-     * @param aux
-     * @param lo
-     * @param hi
+     * @param low
+     * @param high
      */
-    private static void myMergeSort(CompareInt[] arr, CompareInt[] aux, int lo, int hi) {
-	if (hi <= lo)
+    private static void mergeSort(CompareInt[] arr, int low, int high) {
+	if (high == low) {
 	    return;
-	int mid = (int) ((lo + hi) * 0.5);
-	myMergeSort(arr, aux, lo, mid);
-	myMergeSort(arr, aux, mid + 1, hi);
-	merge(arr, aux, lo, mid, hi);
-	Arrays.toString(arr);
+	}
+	int mid = (low + high) / 2;
+	mergeSort(arr, low, mid);
+	mergeSort(arr, mid + 1, high);
+	CompareInt[] mergedPart = merge(Arrays.copyOfRange(arr, low, mid + 1),
+		Arrays.copyOfRange(arr, mid + 1, high + 1));
+	int j = 0;
+	for (int i = low; i <= high; i++) {
+	    arr[i] = mergedPart[j++];
+	}
     }
+
 
     // Helper methods
 
     /**
      * merge method:
      * 
-     * @param arr
-     * @param aux
-     * @param lo
-     * @param mid
-     * @param hi
+     * @param arr1
+     * @param arr2
      */
+    private static CompareInt[] merge(CompareInt[] arr1, CompareInt[] arr2) {
+	int length1 = arr1.length;
+	int length2 = arr2.length;
+	int lengthMerged = length1 + length2;
+	CompareInt[] mergedArr = new CompareInt[length1 + length2];
 
-    private static void merge(CompareInt[] arr, CompareInt[] aux, int lo, int mid, int hi) {
-	// create aux array
-	for (int i = lo; i <= hi; i++)
-	    aux[i] = arr[i];
-
-	int i = lo;
-	int j = mid + 1;
-	int k = lo;
-	;
-	// still elements in both arrays
-	while (i <= mid && j <= hi) {
-	    if (aux[i].compareTo(aux[j]) < 0) {
-		arr[k++] = aux[i++];
+	int i = 0, j = 0, k;
+	for (k = 0; k <= lengthMerged - 1; k++) {
+	    
+	    if (j >= length2) {
+		mergedArr[k] = arr1[i++];
+	    } else if (i >= length1) {
+		mergedArr[k] = arr2[j++];
+	    } else {
+		if (arr1[i].compareTo(arr2[j]) <= 0) {
+		    mergedArr[k] = arr1[i++];
+		} else {
+		    mergedArr[k] = arr2[j++];
+		}
 	    }
-
-	    else {
-		arr[k++] = aux[j++];
-	    }
 	}
-
-	while (i <= mid) {
-	    arr[k++] = aux[i++];
-	}
-	while (j <= hi) {
-	    arr[k++] = aux[j++];
-	}
-
+	return mergedArr;
     }
+    
 
     /**
      * Implement the quickSelect
@@ -85,34 +81,20 @@ public class Sorting {
      * 
      */
 
+    
     public static CompareInt quickSelect(int k, CompareInt[] arr) {
-
-	return myQuickSelect(arr, 0, arr.length - 1, k - 1);
+	int pivotIndex = partition(arr);
+	if (pivotIndex == k - 1) {
+	    return arr[pivotIndex];
+	} else if (pivotIndex > k - 1) {
+	    return quickSelect(k, Arrays.copyOfRange(arr, 0, pivotIndex));
+	} else {
+	    return quickSelect(k - pivotIndex - 1, Arrays.copyOfRange(arr, pivotIndex + 1, arr.length));
+	}
     }
 
-    /**
-     * My version of the quickSelect Algorithm
-     * 
-     * @param arr
-     * @param lo
-     * @param hi
-     * @param k
-     * @return
-     */
 
-    public static CompareInt myQuickSelect(CompareInt[] arr, int lo, int hi, int k) {
-	if (hi == lo)
-	    return arr[lo];
 
-	int pivotLoc = partition(arr, lo, hi);
-	if (pivotLoc == k)
-	    return arr[k];
-	else if (pivotLoc > k)
-	    return myQuickSelect(arr, lo, pivotLoc - 1, k);
-	else
-	    return myQuickSelect(arr, pivotLoc + 1, hi, k);
-
-    }
 
     //Helper methods
     
@@ -121,46 +103,42 @@ public class Sorting {
      * sort the left and right side
      * 
      * @param arr
-     * @param lo
-     * @param hi
      * @return
      */
-    public static int partition(CompareInt[] arr, int lo, int hi) {
-	int pivotIndex = (int)(Math.random()*(hi-lo));
-	swap(arr, pivotIndex, hi);
-	CompareInt pivot = arr[hi];
-	int i  = lo;
-	int j = hi;
-	CompareInt[] aux = new CompareInt[arr.length];
-	for(int k = lo; k < hi; k++) {
-	    if(arr[k].compareTo(pivot)<0)
-		aux[i++]=arr[k];
-	    else
-		aux[j--]=arr[k];
-	    
-	}
-	aux[i] = arr[hi];
-	
-	for(int k = lo; k < hi; k++) {
-	    arr[k] = aux[k];
-	    
-	}
-	
-	return i;
-}
-    
 
-    /**
-     * Swam two elements in an array
-     * 
-     * @param arr
-     * @param i
-     * @param j
-     */
-    public static void swap(CompareInt[] arr, int i, int j) {
-	CompareInt tmp = arr[i];
-	arr[i] = arr[j];
-	arr[j] = tmp;
-    }
+    
+    private static int partition(CompareInt[] arr)
+	{
+	  int length=arr.length;
+	  int pivotIndex=(int)(Math.random()*length);
+	  CompareInt temp;
+	  
+	  temp=arr[pivotIndex];
+	  arr[pivotIndex]=arr[length-1];
+	  arr[length-1]=temp;
+	  
+	  int i=0, j=length-1;
+	  CompareInt[] tempArr=new CompareInt[length];
+	  for(int k=0; k<=length-2; ++k)
+	  {
+	    if(arr[k].compareTo(temp)<=0)
+	    {
+	      tempArr[i++]=arr[k];
+	    }
+	    else
+	    {
+	      tempArr[j--]=arr[k];
+	    }
+	  }
+	  tempArr[i]=temp;
+	  
+	  for(int k=0; k<=length-1; ++k)
+	  {
+	    arr[k]=tempArr[k];
+	  }
+	  
+	  return i;
+	}
+    
 
 }

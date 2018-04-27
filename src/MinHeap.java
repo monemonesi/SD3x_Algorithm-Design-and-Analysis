@@ -1,4 +1,5 @@
 
+
 /**
  * A Heap implementation class
  * 
@@ -51,7 +52,7 @@ public class MinHeap {
 
     private void swim(int k) {
 	while (k > 1 && heap[k].compareTo(heap[k / 2]) < 0) {
-	    Sorting.swap(heap, k, k / 2);
+	    swap(heap, k, k / 2);
 	    k = k / 2;
 	}
 
@@ -61,31 +62,78 @@ public class MinHeap {
      * Extracts the smallest element from the heap
      */
     public CompareInt extractMin() {
-	// reminder: here we are starting from the index 1
-	CompareInt min = heap[1];
-	// Bring the latest element to the root
-	heap[1] = heap[size];
-	size--;
+	if (size < 1)
+	    return null;
+	else {
+	    // reminder: here we are starting from the index 1
+	    CompareInt min = heap[1];
+	    // Bring the latest element to the root
+	    heap[1] = heap[size];
+	    size--;
 
-	// rebuild the heap
-	sink(1);
-	return min;
+	    // rebuild the heap
+	    sink(1);
+	    return min;
+	}
 
     }
     
-    // rebuild the heap
+    
+    /**
+     * Sink function for rebuild the heap
+     * @param k
+     */
     private void sink(int k) {
-	while (2 * k <= size) {
-	    int min = 2 * k;
-	    if (heap[2 * k + 1].compareTo(heap[2 * k]) < 0)
-		min = 2 * k;
-	    if (heap[k].compareTo(heap[min]) < 0)
-		break;
-	    Sorting.swap(heap, k, min);
-	    k = min;
+	int leftChild = k*2;
+	int rightChild = k*2+1;
+	
+	while (leftChild <= size) {
+	    if(leftChild == size) {
+		if(heap[leftChild].compareTo(heap[k])<0) {
+		    swap(heap, k, leftChild);
+		}else {
+		    break;
+		}
+	    } else {
+		if(heap[leftChild].compareTo(heap[rightChild])<0) {
+		    if(heap[k].compareTo(heap[leftChild])<0) {
+			break;			
+		    } else {
+			swap(heap, k, leftChild);
+			k = leftChild;
+			leftChild = k*2;
+			rightChild = k*2+1;
+		    }
+		} else {
+		    if (heap[k].compareTo(heap[rightChild]) < 0) {
+			break;
+		    } else {
+			swap(heap, k, rightChild);
+			k = rightChild;
+			leftChild = k * 2;
+			rightChild = k * 2 + 1;
+		    }
+		    
+		}
+	    }
 
-	}
 
+	}// end while loop
+
+    }
+    
+    
+    /**
+     * swap method 
+     * @param arr
+     * @param i
+     * @param j
+     */
+    
+    public static void swap(CompareInt[] arr, int i, int j) {
+	CompareInt tmp = arr[i];
+	arr[i] = arr[j];
+	arr[j] = tmp;
     }
 
 }
