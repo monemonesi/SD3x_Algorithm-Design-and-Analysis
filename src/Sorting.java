@@ -101,7 +101,7 @@ public class Sorting {
      */
 
     public static CompareInt myQuickSelect(CompareInt[] arr, int lo, int hi, int k) {
-	if (hi <= lo)
+	if (hi == lo)
 	    return arr[lo];
 
 	int pivotLoc = partition(arr, lo, hi);
