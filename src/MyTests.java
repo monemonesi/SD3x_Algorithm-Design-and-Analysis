@@ -21,6 +21,16 @@ public class MyTests {
 	}
 	
 	@Test
+	public void HuffmanSampleTest1() {
+		String input = "aabc";
+		Huffman h = new Huffman(input);
+		String encoding = h.encode();
+		assertEquals(input, h.decode(encoding));
+	}
+	
+	
+	
+	@Test
 	public void IntervalSampleTest() {
 		GreedyDynamicAlgorithms.Interval red = new GreedyDynamicAlgorithms.Interval(1, 3);
 		GreedyDynamicAlgorithms.Interval blue = new GreedyDynamicAlgorithms.Interval(0, 4);
