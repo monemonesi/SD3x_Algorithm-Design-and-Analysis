@@ -12,11 +12,58 @@ public class GreedyDynamicAlgorithms {
 	 * @param blue - the list blue intervals
 	 * @return
 	 */
-	public static int optimalIntervals(ArrayList<Interval> red, ArrayList<Interval> blue) {
-		//TODO
-		return -1;
+    public static int optimalIntervals(ArrayList<Interval> red, ArrayList<Interval> blue) {
+	Interval.sortByStartTime(blue);
+	Interval.sortByFinishTime(red);
+
+	int i = 0;
+	int j = 0;
+	int count = 0;
+
+	while (i < blue.size() && j < red.size()) {
+	    //do not consider the red[j] if it is not intersecting with blue[i]
+	    if (!isIntersected(red.get(j), blue.get(i))) {
+		j++;
+		continue;
+	    }
+
+	    //find the latest red[j] interval that overlaps blue[i]
+	    //NOTE: the last index that intersect blue[i] is [j-1]
+	    while (j < red.size() && isIntersected(red.get(j), blue.get(i))) {
+		j++;
+	    }
+	    
+	    count++;
+	    //remove all the blue interval intersecting the red[j-1] interval
+	    while (isIntersected(red.get(j - 1), blue.get(i))) {
+		i++;
+		if (i == blue.size()) {
+		    return count;
+		}
+	    }
 	}
-	
+
+	if (i < blue.size())
+	    return -1; 
+	return count;
+    }
+    
+    //helper method
+    /**
+     * Goal: return true if two numerical interval are intersecting
+     * @param interval
+     * @param interval2
+     * @return
+     */
+    private static boolean isIntersected(Interval interval, Interval interval2) {
+	// TODO Auto-generated method stub
+	if (interval.start < interval2.start) {
+	    return interval.finish >= interval2.start;
+	} else {
+	    return interval.start <= interval2.finish;
+	}
+    }
+
 	/**
 	 * Goal: find any path of lowest cost from the top-left of the grid (grid[0][0])
 	 * to the bottom right of the grid (grid[m-1][n-1]).  Output this sequence of directions
