@@ -1,46 +1,33 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import java.io.*;
 
 import org.junit.Test;
 
+import java.util.*;
+
 public class MyTests {
 	
-	/*TODO: Add your own test cases here!
-	 * We've provided a sample test case for each problem below
-	 * You can use these as building blocks to write your own test cases
-	 */
-	
 	@Test
-	public void HuffmanSampleTest() {
-		String input = "abc";
-		Huffman h = new Huffman(input);
-		String encoding = h.encode();
-		assertEquals(input, h.decode(encoding));
-		assertEquals("huffman abc compression", Huffman.compressionRatio(input), 0.20833, 0.01);
+	public void mazeSampleTest() throws IOException {
+		Maze m = new Maze("files/mazeSmall.txt");
+		List<Maze.Move> moves = m.solveMaze();
+		assertEquals(2, moves.size());
+		assertEquals(Maze.Move.DOWN, moves.get(0));
+		assertEquals(Maze.Move.RIGHT, moves.get(1));
 	}
 	
 	@Test
-	public void HuffmanSampleTest1() {
-		String input = "aabc";
-		Huffman h = new Huffman(input);
-		String encoding = h.encode();
-		assertEquals(input, h.decode(encoding));
-	}
-	
-	
-	
-	@Test
-	public void IntervalSampleTest() {
-		GreedyDynamicAlgorithms.Interval red = new GreedyDynamicAlgorithms.Interval(1, 3);
-		GreedyDynamicAlgorithms.Interval blue = new GreedyDynamicAlgorithms.Interval(0, 4);
-		ArrayList<GreedyDynamicAlgorithms.Interval> reds = new ArrayList<>();
-		ArrayList<GreedyDynamicAlgorithms.Interval> blues = new ArrayList<>();
-		reds.add(red);
-		blues.add(blue);
-		int expectedOptimal = 1;
-		int actualOptimal = GreedyDynamicAlgorithms.optimalIntervals(reds, blues);
-		assertEquals("interval 1 red 1 blue", expectedOptimal, actualOptimal);
+	public void testSmall() throws IOException {
+		Graph g = new Graph(4);
+        g.addEdge(0, 1);
+        g.addEdge(0, 2);
+        g.addEdge(1, 3);
+        g.addEdge(2, 3);
+		assertEquals(2, g.numShortestPaths(0, 3));
+		assertEquals(2, g.numShortestPaths(1, 2));
+		assertEquals(1, g.numShortestPaths(0, 1));
+		assertEquals(1, g.numShortestPaths(2, 3));
 	}
 
 }
